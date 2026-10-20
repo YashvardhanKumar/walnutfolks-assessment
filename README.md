@@ -5,7 +5,7 @@
 [![Django REST Framework](https://img.shields.io/badge/DRF-3.18-red.svg)](https://www.django-rest-framework.org/)
 [![Celery](https://img.shields.io/badge/Celery-5.6-brightgreen.svg)](https://docs.celeryq.dev/)
 [![Redis](https://img.shields.io/badge/Redis-7-red.svg)](https://redis.io/)
-[![Database](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-3ECF8E.svg)](https://supabase.com/)
+[![Database](https://img.shields.io/badge/Database-AWS%20RDS%20PostgreSQL-336791.svg)](https://aws.amazon.com/rds/)
 [![Cloud](https://img.shields.io/badge/Deployed-AWS%20EC2-orange.svg)](https://aws.amazon.com/)
 
 A production-grade, asynchronous backend service designed to receive transaction webhooks from external payment processors (e.g., Razorpay, Stripe), immediately acknowledge receipt within milliseconds (< 500ms SLA), and process transactions reliably in the background with strict idempotency guarantees.
@@ -138,7 +138,7 @@ sequenceDiagram
 | Component | Technology | Rationale |
 | :--- | :--- | :--- |
 | **Framework** | **Django & DRF** | Best-in-class Python framework offering battle-tested ORM, strong data validation, transaction atomic management, and enterprise-grade security. |
-| **Cloud Database** | **Supabase PostgreSQL** | Fully managed PostgreSQL with ACID compliance, connection pooling, and B-Tree unique indexes ensuring absolute data integrity and idempotency. |
+| **Cloud Database** | **AWS RDS PostgreSQL (Production) / Supabase** | Managed AWS RDS PostgreSQL instance in `ap-south-1` with sub-millisecond VPC latency, ACID compliance, and B-Tree unique indexes ensuring absolute idempotency. Also supports Supabase via `DATABASE_URL`. |
 | **Async Task Engine** | **Celery & Redis** | Distributed task queue standard for decoupled background processing. Ensures webhooks return instantly (`< 30ms`) while workers simulate the 30-second external delay. |
 | **Idempotency Strategy** | **Database-level Unique Constraints + Atomic Transactions** | Uses database-enforced unique constraints (`transaction_id`) combined with Django's `transaction.atomic()` and `select_for_update()`. Eliminates race conditions even under concurrent identical requests. |
 | **Deployment** | **AWS EC2 + Nginx + Systemd/Docker** | Deployed on AWS in `ap-south-1` behind Nginx reverse proxy with low latency, automated health checks, and process supervision. |
