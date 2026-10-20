@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [ published ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -41,7 +44,7 @@ jobs:
   deploy:
     name: Deploy to AWS EC2
     needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.event_name == 'release' && github.event.action == 'published') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -53,8 +56,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            echo "🚀 Starting automated deployment..."
+            echo "🚀 Starting automated deployment for release..."
             cd /home/ubuntu/transaction-webhook-service
+            git fetch origin --tags
             git fetch origin main
             git reset --hard origin/main
             .venv/bin/pip install -r requirements.txt
@@ -63,4 +67,4 @@ jobs:
             sleep 2
             echo "🩺 Verifying health endpoint..."
             curl -f http://127.0.0.1/
-            echo "✅ Deployment successful and verified healthy!"
+            echo "✅ Release deployment successful and verified healthy!"
