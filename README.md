@@ -165,8 +165,8 @@ sequenceDiagram
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/YashvardhanKumar/walnutfolks-backend-assessment.git
-cd walnutfolks-backend-assessment
+git clone https://github.com/YashvardhanKumar/walnutfolks-assessment.git
+cd walnutfolks-assessment
 
 # 2. Create virtual environment
 python3 -m venv .venv
