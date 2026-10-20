@@ -14,12 +14,11 @@ A production-grade, asynchronous backend service designed to receive transaction
 
 ## 🌐 Live Public Cloud Deployment (AWS)
 
-The service is deployed and live on AWS:
-
-- **Base URL:** `http://13.203.127.127`
-- **Health Check:** `http://13.203.127.127/`
-- **Webhook Endpoint:** `http://13.203.127.127/v1/webhooks/transactions`
-- **Query Endpoint:** `http://13.203.127.127/v1/transactions/{transaction_id}`
+- **Production HTTPS URL:** `https://walnutfolks-assessment.codeflip.co.in`
+- **Health Check:** `https://walnutfolks-assessment.codeflip.co.in/`
+- **Webhook Endpoint:** `https://walnutfolks-assessment.codeflip.co.in/v1/webhooks/transactions`
+- **Query Endpoint:** `https://walnutfolks-assessment.codeflip.co.in/v1/transactions/{transaction_id}`
+- **Direct IP (AWS EC2):** `http://13.203.127.127/`
 
 ---
 
@@ -222,8 +221,8 @@ A complete live benchmark script is included:
 # Against local server:
 python test_api.py http://localhost:8000
 
-# Against live AWS cloud deployment:
-python test_api.py http://13.203.127.127
+# Against live AWS HTTPS cloud deployment:
+python test_api.py https://walnutfolks-assessment.codeflip.co.in
 ```
 
 ---
@@ -235,5 +234,5 @@ python test_api.py http://13.203.127.127
 | **1. Single Transaction** | ✅ Complete | Returns `202 Accepted`, transitions to `PROCESSED` after 30-second delay. |
 | **2. Duplicate Prevention** | ✅ Complete | Same `transaction_id` sent repeatedly results in only 1 processed record. |
 | **3. Performance (< 500ms)** | ✅ Complete | Endpoint responds in **~15-30ms** under benchmark load. |
-| **4. Reliability & Cloud DB** | ✅ Complete | Managed cloud database integration with fallback error handling. |
-| **5. Cloud Deployment** | ✅ Complete | Live on AWS EC2 at `http://13.203.127.127/`. |
+| **4. Reliability & Cloud DB** | ✅ Complete | Managed AWS RDS PostgreSQL with sub-ms VPC latency + fallback error handling. |
+| **5. Cloud Deployment** | ✅ Complete | Live on AWS EC2 at `https://walnutfolks-assessment.codeflip.co.in/`. |
