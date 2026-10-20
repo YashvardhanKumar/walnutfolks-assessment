@@ -165,8 +165,8 @@ sequenceDiagram
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/yashvardhankumar-codingal/transaction-webhook-service.git
-cd transaction-webhook-service
+git clone https://github.com/YashvardhanKumar/walnutfolks-backend-assessment.git
+cd walnutfolks-backend-assessment
 
 # 2. Create virtual environment
 python3 -m venv .venv
