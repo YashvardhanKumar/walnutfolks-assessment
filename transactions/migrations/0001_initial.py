@@ -7,27 +7,51 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Transaction',
+            name="Transaction",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('transaction_id', models.CharField(db_index=True, help_text='Unique external transaction identifier', max_length=128, unique=True)),
-                ('source_account', models.CharField(max_length=128)),
-                ('destination_account', models.CharField(max_length=128)),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=16)),
-                ('currency', models.CharField(max_length=10)),
-                ('status', models.CharField(choices=[('PROCESSING', 'PROCESSING'), ('PROCESSED', 'PROCESSED'), ('FAILED', 'FAILED')], db_index=True, default='PROCESSING', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('processed_at', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "transaction_id",
+                    models.CharField(
+                        db_index=True,
+                        help_text="Unique external transaction identifier",
+                        max_length=128,
+                        unique=True,
+                    ),
+                ),
+                ("source_account", models.CharField(max_length=128)),
+                ("destination_account", models.CharField(max_length=128)),
+                ("amount", models.DecimalField(decimal_places=2, max_digits=16)),
+                ("currency", models.CharField(max_length=10)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PROCESSING", "PROCESSING"),
+                            ("PROCESSED", "PROCESSED"),
+                            ("FAILED", "FAILED"),
+                        ],
+                        db_index=True,
+                        default="PROCESSING",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("processed_at", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'verbose_name': 'Transaction',
-                'verbose_name_plural': 'Transactions',
-                'ordering': ['-created_at'],
+                "verbose_name": "Transaction",
+                "verbose_name_plural": "Transactions",
+                "ordering": ["-created_at"],
             },
         ),
     ]

@@ -1,5 +1,7 @@
 from decimal import Decimal
+
 from rest_framework import serializers
+
 from .models import Transaction
 
 
@@ -7,7 +9,9 @@ class WebhookPayloadSerializer(serializers.Serializer):
     transaction_id = serializers.CharField(max_length=128, required=True, allow_blank=False)
     source_account = serializers.CharField(max_length=128, required=True, allow_blank=False)
     destination_account = serializers.CharField(max_length=128, required=True, allow_blank=False)
-    amount = serializers.DecimalField(max_digits=16, decimal_places=2, min_value=Decimal("0.01"), required=True)
+    amount = serializers.DecimalField(
+        max_digits=16, decimal_places=2, min_value=Decimal("0.01"), required=True
+    )
     currency = serializers.CharField(max_length=10, required=True, allow_blank=False)
 
     def validate_currency(self, value):

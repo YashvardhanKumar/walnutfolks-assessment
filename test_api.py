@@ -13,6 +13,7 @@ Can also be run against live deployed AWS service:
 import sys
 import time
 import uuid
+
 import requests
 
 BASE_URL = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://localhost:8000"
@@ -29,7 +30,13 @@ try:
     session.get(f"{BASE_URL}/", timeout=10)
     session.post(
         f"{BASE_URL}/v1/webhooks/transactions",
-        json={"transaction_id": f"txn_init_warmup_{uuid.uuid4().hex[:6]}", "source_account": "init", "destination_account": "init", "amount": 1, "currency": "INR"},
+        json={
+            "transaction_id": f"txn_init_warmup_{uuid.uuid4().hex[:6]}",
+            "source_account": "init",
+            "destination_account": "init",
+            "amount": 1,
+            "currency": "INR",
+        },
         timeout=10,
     )
     print("Warmup complete. Connection pool active.")
@@ -77,7 +84,9 @@ for i in range(1, 4):
     dup_res = session.post(f"{BASE_URL}/v1/webhooks/transactions", json=payload)
     dup_latency = (time.perf_counter() - t0) * 1000
     print(f"Duplicate send #{i} -> Status: {dup_res.status_code} ({dup_latency:.1f}ms)")
-    assert dup_res.status_code == 202, f"Duplicate request should return 202, got {dup_res.status_code}"
+    assert (
+        dup_res.status_code == 202
+    ), f"Duplicate request should return 202, got {dup_res.status_code}"
 print("✅ Idempotency test passed!")
 
 # 4. Immediate Query test: should be in PROCESSING state
@@ -104,7 +113,10 @@ while time.time() - start_time < 50:
         tx = poll_res.json()[0]
         curr_status = tx.get("status")
         elapsed_sec = int(time.time() - start_time)
-        print(f"[{elapsed_sec}s] Transaction status: {curr_status} | processed_at: {tx.get('processed_at')}")
+        print(
+            f"[{elapsed_sec}s] Transaction status: {curr_status} | "
+            f"processed_at: {tx.get('processed_at')}"
+        )
         if curr_status == "PROCESSED":
             assert tx.get("processed_at") is not None, "processed_at timestamp must be set"
             completed = True

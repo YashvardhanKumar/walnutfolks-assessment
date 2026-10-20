@@ -1,9 +1,10 @@
 import time
-from django.db import connection
+
 from django.test import TransactionTestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
-from transactions.models import Transaction, TransactionStatus
+
+from transactions.models import Transaction
 
 
 @override_settings(ASYNC_BACKEND="thread", PROCESSING_DELAY_SECONDS=1)
@@ -13,6 +14,7 @@ class E2ETimedIntegrationTests(TransactionTestCase):
     to verify real background transition from PROCESSING to PROCESSED across threads.
     Uses TransactionTestCase to support multi-threaded database access.
     """
+
     def setUp(self):
         self.client = APIClient()
 

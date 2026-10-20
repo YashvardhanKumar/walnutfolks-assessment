@@ -1,9 +1,11 @@
 import logging
 import time
+
 from celery import shared_task
 from django.conf import settings
 from django.db import connection, transaction
 from django.utils import timezone
+
 from .models import Transaction, TransactionStatus
 
 logger = logging.getLogger(__name__)
@@ -17,7 +19,11 @@ def execute_transaction_processing(transaction_id: str):
     3. Updates processed_at timestamp in persistent storage.
     """
     delay = getattr(settings, "PROCESSING_DELAY_SECONDS", 30)
-    logger.info("Starting processing for transaction %s (simulating external API delay: %ds)", transaction_id, delay)
+    logger.info(
+        "Starting processing for transaction %s (simulating external API delay: %ds)",
+        transaction_id,
+        delay,
+    )
     if delay > 0:
         time.sleep(delay)
 
@@ -38,7 +44,11 @@ def execute_transaction_processing(transaction_id: str):
             txn.save(update_fields=["status", "processed_at"])
             logger.info("Transaction %s marked PROCESSED at %s", transaction_id, txn.processed_at)
         else:
-            logger.info("Transaction %s already in state %s, ignoring duplicate processing", transaction_id, txn.status)
+            logger.info(
+                "Transaction %s already in state %s, ignoring duplicate processing",
+                transaction_id,
+                txn.status,
+            )
 
 
 @shared_task(name="transactions.tasks.process_transaction_task", bind=True, max_retries=3)

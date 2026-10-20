@@ -1,5 +1,6 @@
 import logging
 import threading
+
 from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.utils import timezone
@@ -23,6 +24,7 @@ class HealthCheckView(APIView):
         "current_time": "2024-01-15T10:30:00Z"
     }
     """
+
     authentication_classes = []
     permission_classes = []
 
@@ -42,6 +44,7 @@ class WebhookTransactionView(APIView):
     Accepts transaction webhooks, validates payload, guarantees idempotency,
     dispatches background processing, and immediately returns 202 Accepted.
     """
+
     authentication_classes = []
     permission_classes = []
 
@@ -72,7 +75,6 @@ class WebhookTransactionView(APIView):
                 is_new_transaction = created
         except IntegrityError:
             # Concurrent race condition caught by unique constraint
-            txn = Transaction.objects.get(transaction_id=transaction_id)
             is_new_transaction = False
 
         # Only dispatch background job if this is the first time receiving this transaction
@@ -80,7 +82,10 @@ class WebhookTransactionView(APIView):
             self._dispatch_background_processing(transaction_id)
             message = "Transaction received and queued for processing"
         else:
-            logger.info("Duplicate webhook received for transaction_id=%s. Acknowledging idempotently.", transaction_id)
+            logger.info(
+                "Duplicate webhook received for transaction_id=%s. Acknowledging idempotently.",
+                transaction_id,
+            )
             message = "Webhook acknowledged. Transaction already received"
 
         return Response(
@@ -107,7 +112,7 @@ class WebhookTransactionView(APIView):
                 return
             except Exception as exc:
                 logger.warning(
-                    "Celery dispatch failed (%s), falling back to background thread for transaction %s",
+                    "Celery dispatch failed (%s), fallback to thread for txn %s",
                     exc,
                     transaction_id,
                 )
@@ -128,6 +133,7 @@ class TransactionQueryView(APIView):
     Per specification: returns an array containing the transaction object.
     Supports ?format=object or ?flat=true if the caller prefers a single JSON dictionary.
     """
+
     authentication_classes = []
     permission_classes = []
 
@@ -147,7 +153,10 @@ class TransactionQueryView(APIView):
             )
 
         serializer = TransactionSerializer(txn)
-        return_flat = request.query_params.get("flat") == "true" or request.query_params.get("style") == "object"
+        return_flat = (
+            request.query_params.get("flat") == "true"
+            or request.query_params.get("style") == "object"
+        )
 
         if return_flat:
             return Response(serializer.data, status=status.HTTP_200_OK)

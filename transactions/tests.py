@@ -1,5 +1,6 @@
 import time
 from decimal import Decimal
+
 from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -64,7 +65,9 @@ class TransactionServiceTests(TestCase):
         )
         elapsed_ms = (time.perf_counter() - start) * 1000
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertLess(elapsed_ms, 500, f"Webhook took {elapsed_ms:.2f}ms, which exceeds 500ms limit")
+        self.assertLess(
+            elapsed_ms, 500, f"Webhook took {elapsed_ms:.2f}ms, which exceeds 500ms limit"
+        )
 
     def test_duplicate_prevention_idempotency(self):
         """
@@ -125,7 +128,7 @@ class TransactionServiceTests(TestCase):
            "processed_at": "..."
         }]
         """
-        txn = Transaction.objects.create(
+        Transaction.objects.create(
             transaction_id="txn_query_001",
             source_account="acc_user_789",
             destination_account="acc_merchant_456",
